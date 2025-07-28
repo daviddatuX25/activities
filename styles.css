@@ -1,0 +1,47 @@
+@layer components {
+  .bio-detail {
+    @apply flex flex-col gap-y-2 py-5 px-10;
+  }
+  .bio-detail p {
+    @apply text-[0.8rem] sm:text-[0.9rem];
+  }
+  .bio-detail h1 {
+    @apply text-[1rem] sm:text-[1.2rem];
+  }
+
+  .story-detail {
+    @apply grid grid-cols-1 mb-5 break-inside-avoid;
+  }
+
+  .story-image {
+    @apply p-5 h-50;
+  }
+
+  .story-image img {
+    @apply w-full h-full mx-auto object-cover;
+  }
+
+  .story-title {
+    @apply text-[1rem] text-center;
+  }
+
+  .story-body {
+    @apply text-[1rem] leading-8 text-justify indent-10 mt-4 p-1;
+  }
+}
+
+@layer utilities {
+  @keyframes marquee {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+  }
+
+  .animate-marquee {
+    @apply flex;
+    animation: marquee 15s linear infinite;
+  }
+
+  .hover-pause:hover {
+    animation-play-state: paused;
+  }
+}
