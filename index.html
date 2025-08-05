@@ -9,10 +9,6 @@
   <script>
     document.addEventListener('alpine:init', () => {
       Alpine.store('isMobile', window.innerWidth < 640); // sm = 640px
-
-      window.addEventListener('resize', () => {
-        Alpine.store('isMobile', window.innerWidth < 640);
-      });
     });
   </script>
 </head>
@@ -27,11 +23,12 @@
     </button>
 
     <div 
-      :class="{
-        'w-full mt-3 flex-col gap-2': open || $store.isMobile,
-        'hidden': !open && $store.isMobile,
-      }"
-      class="flex sm:text-[1rem] text-[0.8rem] sm:flex sm:gap-5 sm:items-center sm:mt-0 sm:w-auto sm:ml-auto"
+      :class="[
+        'flex text-[0.8rem] sm:text-[1rem]',
+        open || $store.isMobile ? 'w-full mt-3 flex-col gap-2' : '',
+        !open && $store.isMobile ? 'hidden' : 'flex',
+        !$store.isMobile ? 'sm:flex sm:gap-5 sm:items-center sm:mt-0 sm:w-auto sm:ml-auto' : ''
+      ]"
     >
       <a href="#biodata">Biodata</a>
       <a href="#myStory">My Story</a>
