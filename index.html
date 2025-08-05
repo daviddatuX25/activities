@@ -19,9 +19,7 @@
 <body>
   <nav class="flex flex-wrap items-center justify-between sticky top-0 bg-slate-200 px-5 sm:px-10 py-2 sm:py-5" x-data="{ open: false }">
     <h1 class="text-[1rem] inline-flex items-center gap-2">
-      <span>David Datu Sarmiento</span>
-      <span class="hidden sm:inline">|</span>
-      <span>Biography</span>
+      <span>David Datu Sarmiento</span> | <span>Biography</span>
     </h1>
 
     <button @click="open = !open" class="sm:hidden text-xl">
@@ -33,7 +31,7 @@
         'w-full mt-3 flex-col gap-2': open || $store.isMobile,
         'hidden': !open && $store.isMobile,
       }"
-      class="flex text-[0.8rem] sm:flex sm:gap-5 sm:items-center sm:mt-0 sm:w-auto sm:ml-auto"
+      class="flex sm:text-[1rem] text-[0.8rem] sm:flex sm:gap-5 sm:items-center sm:mt-0 sm:w-auto sm:ml-auto"
     >
       <a href="#biodata">Biodata</a>
       <a href="#myStory">My Story</a>
