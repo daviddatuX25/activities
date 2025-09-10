@@ -1,0 +1,134 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Triggers — Reveal.js Interactive Guide</title>  <!-- Reveal.js CSS (CDN) -->  <link rel="stylesheet" href="https://unpkg.com/reveal.js/dist/reveal.css">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js/dist/theme/black.css" id="theme">  <!-- Highlight.js for SQL syntax highlighting -->  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">  <style>
+    .two-col { display: flex; gap: 2rem; align-items: flex-start; flex-wrap: wrap; }
+    .two-col .col { flex: 1 1 45%; min-width: 280px; }
+    .diagram { background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 8px; }
+    .muted { color:#bbb; font-size:.9rem }
+    pre { max-width: 100%; overflow-x:auto; }
+    .center-box { text-align:center }
+    h1, h2, h3 { color: #ffcc00; }
+  </style></head>
+<body><div class="reveal">
+  <div class="slides"><!-- Slide 1: Situational Problem -->
+<section>
+  <h1>Imagine this...</h1>
+  <p class="fragment">An online shop accepts a new order...</p>
+  <p class="fragment">But the stock count is NOT updated automatically.</p>
+  <p class="fragment">Next customer buys the same item → Out of stock!</p>
+  <p class="fragment"><strong>Question:</strong> How could we prevent this mistake?</p>
+</section>
+
+<!-- Slide 2: Title -->
+<section data-transition="fade">
+  <h1>SQL Triggers</h1>
+  <p class="muted">Automating database actions when data changes</p>
+
+  <div class="diagram fragment">
+    <strong>INSERT / UPDATE / DELETE</strong>
+    <span style="display:inline-block; margin:0 12px">→</span>
+    <strong>TRIGGER</strong>
+    <span style="display:inline-block; margin:0 12px">→</span>
+    <strong>ACTION</strong>
+  </div>
+</section>
+
+<!-- Slide 3: Why Triggers are Useful -->
+<section>
+  <h2>Why Triggers?</h2>
+  <ul>
+    <li class="fragment">Maintain data integrity automatically</li>
+    <li class="fragment">Audit changes in tables</li>
+    <li class="fragment">Enforce business rules</li>
+  </ul>
+  <div class="diagram fragment">
+    <p><strong>Example:</strong> Orders table → trigger → update stock in Products</p>
+  </div>
+</section>
+
+<!-- Slide 4: Types of Triggers -->
+<section>
+  <h2>Types of Triggers</h2>
+  <div class="two-col">
+    <div class="col">
+      <ul>
+        <li class="fragment"><strong>BEFORE</strong> — runs before the event</li>
+        <li class="fragment"><strong>AFTER</strong> — runs after the event</li>
+        <li class="fragment">Event types: <em>INSERT, UPDATE, DELETE</em></li>
+      </ul>
+      <p class="fragment" style="margin-top:1rem;"><strong>Quiz:</strong> Which one validates data <em>before</em> it’s inserted?</p>
+    </div>
+    <div class="col diagram fragment">
+      <pre><code>INSERT → BEFORE trigger → (validate)
+
+INSERT → AFTER trigger → (update stock)</code></pre> </div> </div> </section>
+
+<!-- Slide 5: Examples of BEFORE triggers -->
+<section>
+  <h2>BEFORE Trigger Example</h2>
+  <pre><code class="sql">CREATE TRIGGER validate_salary
+
+BEFORE INSERT ON Employees FOR EACH ROW BEGIN IF NEW.salary < 0 THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Salary cannot be negative'; END IF; END;</code></pre> <p class="fragment">Prevents inserting invalid data before it reaches the table.</p> </section>
+
+<!-- Slide 6: Examples of AFTER triggers -->
+<section>
+  <h2>AFTER Trigger Example</h2>
+  <pre><code class="sql">CREATE TRIGGER log_update
+
+AFTER UPDATE ON Accounts FOR EACH ROW BEGIN INSERT INTO Account_Log(account_id, old_balance, new_balance) VALUES (OLD.id, OLD.balance, NEW.balance); END;</code></pre> <p class="fragment">Automatically logs updates for auditing purposes.</p> </section>
+
+<!-- Slide 7: DELETE Trigger Example -->
+<section>
+  <h2>DELETE Trigger Example</h2>
+  <pre><code class="sql">CREATE TRIGGER archive_students
+
+BEFORE DELETE ON Students FOR EACH ROW BEGIN INSERT INTO Students_Archive(id, name, deleted_at) VALUES (OLD.id, OLD.name, CURRENT_TIMESTAMP); END;</code></pre> <p class="fragment">Saves deleted records in an archive table for reference.</p> </section>
+
+<!-- Slide 8: Simple Stock Example -->
+<section>
+  <h2>Stock Example</h2>
+  <pre><code class="sql">CREATE TRIGGER update_stock
+
+AFTER INSERT ON Orders FOR EACH ROW BEGIN UPDATE Products SET stock = stock - NEW.quantity WHERE product_id = NEW.product_id; END;</code></pre> <p class="fragment">Reduces product stock automatically when order is added.</p> </section>
+
+<!-- Slide 9: Best Practices -->
+<section>
+  <h2>Best Practices</h2>
+  <ul>
+    <li class="fragment">Don’t overuse triggers — may slow DB performance</li>
+    <li class="fragment">Keep them simple and predictable</li>
+    <li class="fragment">Use log tables to track important actions</li>
+  </ul>
+  <div class="center-box fragment">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/7/79/Cartoon_computer.svg" alt="overworked DB" style="max-width:250px;">
+  </div>
+</section>
+
+<!-- Slide 10: Wrap-up -->
+<section>
+  <h2>Wrap-up</h2>
+  <ul>
+    <li class="fragment">Triggers = automatic database responses</li>
+    <li class="fragment">Useful for integrity, auditing, and rules</li>
+    <li class="fragment">Examples: BEFORE (validation), AFTER (logging), DELETE (archiving)</li>
+    <li class="fragment">Best used with simplicity in mind</li>
+  </ul>
+</section>
+
+  </div>
+</div><!-- Scripts --><script src="https://unpkg.com/reveal.js/dist/reveal.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script><script>
+  Reveal.initialize({
+    hash: true,
+    transition: 'convex',
+    slideNumber: true,
+    progress: true
+  });
+
+  document.querySelectorAll('pre code').forEach(el => hljs.highlightElement(el));
+</script></body>
+</html>
